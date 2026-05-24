@@ -26,6 +26,7 @@
 #include <config-kpa-videobackends.h>
 
 #include "CategoryImageConfig.h"
+#include "GifDisplay.h"
 #include "CursorVisibilityHandler.h"
 #include "ImageDisplay.h"
 #include "InfoBox.h"
@@ -131,6 +132,9 @@ Viewer::ViewerWidget::ViewerWidget(UsageType type)
     m_display = m_imageDisplay = new ImageDisplay(this);
     addWidget(m_imageDisplay);
     m_cursorHandlerForImageDisplay = new CursorVisibilityHandler(m_imageDisplay);
+
+    m_gifDisplay = new GifDisplay(this);
+    addWidget(m_gifDisplay);
 
     m_textDisplay = new TextDisplay(this);
     addWidget(m_textDisplay);
@@ -469,12 +473,16 @@ void Viewer::ViewerWidget::load()
     const bool isReadable = QFileInfo(currentFile.absolute()).isReadable();
     const bool isVideo = isReadable && KPABase::isVideo(currentFile);
 
+    const bool isGif = isReadable && QFileInfo(currentFile.absolute()).suffix().toLower() == QLatin1String("gif");
+
     m_crashSentinel.suspend();
     if (isReadable) {
         if (isVideo) {
             m_display = m_videoDisplay;
             m_crashSentinel.activate();
-        } else
+        } else if (isGif)
+            m_display = m_gifDisplay;
+        else
             m_display = m_imageDisplay;
     } else {
         m_display = m_textDisplay;

@@ -47,6 +47,7 @@ namespace Viewer
 
 class AnnotationHandler;
 class AbstractDisplay;
+class GifDisplay;
 class ImageDisplay;
 class InfoBox;
 class TransientDisplay;
@@ -234,6 +235,7 @@ private:
 
     AbstractDisplay *m_display;
     ImageDisplay *m_imageDisplay;
+    GifDisplay *m_gifDisplay;
     VideoDisplay *m_videoDisplay;
     TextDisplay *m_textDisplay;
 
