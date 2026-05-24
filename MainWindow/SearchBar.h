@@ -10,6 +10,7 @@
 #include <ktoolbar.h>
 
 class QLineEdit;
+class QPushButton;
 class KMainWindow;
 
 namespace MainWindow
@@ -71,9 +72,20 @@ Q_SIGNALS:
      *  - Home and End keys
      */
     void movementKeyPressed(QKeyEvent *);
+    /**
+     * @brief advancedSearchClicked is emitted when the Advanced Search button is pressed.
+     */
+    void advancedSearchClicked();
+
+public Q_SLOTS:
+    /**
+     * @brief setAdvancedSearchActive visually marks the Advanced Search button as active/inactive.
+     */
+    void setAdvancedSearchActive(bool active);
 
 private:
     QLineEdit *m_edit;
+    QPushButton *m_advancedSearchButton;
 };
 }
 

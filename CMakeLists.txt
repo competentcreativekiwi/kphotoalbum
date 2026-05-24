@@ -367,6 +367,8 @@ set(libMainWindow_SRCS
     "${CMAKE_CURRENT_SOURCE_DIR}/MainWindow/CategoryImagePopup.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/MainWindow/SearchBar.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/MainWindow/SearchBar.h"
+    "${CMAKE_CURRENT_SOURCE_DIR}/MainWindow/AdvancedSearchDialog.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/MainWindow/AdvancedSearchDialog.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/MainWindow/ImageCounter.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/MainWindow/ImageCounter.h"
     "${CMAKE_CURRENT_SOURCE_DIR}/MainWindow/DirtyIndicator.cpp"

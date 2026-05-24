@@ -92,6 +92,7 @@ class BreadcrumbViewer;
 namespace MainWindow
 {
 
+class AdvancedSearchDialog;
 class SearchBar;
 class DeleteDialog;
 class StatusBar;
@@ -215,6 +216,8 @@ protected Q_SLOTS:
     void slotThumbnailSizeChanged();
     void slotMarkUntagged();
     void triggerCopyLinkAction(CopyLinkEngine::Action action);
+    void slotOpenAdvancedSearch();
+    void slotAdvancedSearchClosed();
 
 protected:
     void configureImages(bool oneAtATime);
@@ -297,6 +300,7 @@ private:
     QFrame *m_dateBarLine;
     MainWindow::StatusBar *m_statusBar;
     QString m_lastTarget;
+    AdvancedSearchDialog *m_advancedSearchDialog;
 #ifdef HAVE_MARBLE
     Map::MapView *m_positionBrowser;
 #endif

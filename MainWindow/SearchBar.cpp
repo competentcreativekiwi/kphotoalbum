@@ -9,6 +9,7 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include <QLineEdit>
+#include <QPushButton>
 #include <kactioncollection.h>
 #include <kmainwindow.h>
 #include <qapplication.h>
@@ -27,6 +28,11 @@ MainWindow::SearchBar::SearchBar(KMainWindow *parent)
     addWidget(m_edit);
     connect(m_edit, &QLineEdit::textChanged, this, &SearchBar::textChanged);
     connect(m_edit, &QLineEdit::returnPressed, this, &SearchBar::returnPressed);
+
+    m_advancedSearchButton = new QPushButton(i18nc("@action:button", "Advanced Search"), this);
+    m_advancedSearchButton->setCheckable(true);
+    addWidget(m_advancedSearchButton);
+    connect(m_advancedSearchButton, &QPushButton::clicked, this, &SearchBar::advancedSearchClicked);
 
     m_edit->installEventFilter(this);
     setFocusProxy(m_edit);
@@ -65,6 +71,11 @@ void MainWindow::SearchBar::clear()
 void MainWindow::SearchBar::setLineEditEnabled(bool enabled)
 {
     m_edit->setEnabled(enabled);
+}
+
+void MainWindow::SearchBar::setAdvancedSearchActive(bool active)
+{
+    m_advancedSearchButton->setChecked(active);
 }
 
 // vi:expandtab:tabstop=4 shiftwidth=4:

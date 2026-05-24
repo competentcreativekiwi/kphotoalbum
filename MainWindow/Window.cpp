@@ -16,6 +16,7 @@
 #include "InvalidDateFinder.h"
 #include "Logging.h"
 #include "Options.h"
+#include "AdvancedSearchDialog.h"
 #include "SearchBar.h"
 #include "SplashScreen.h"
 #include "StatisticsDialog.h"
@@ -134,6 +135,7 @@ MainWindow::Window::Window(QWidget *parent)
     , m_deleteDialog(nullptr)
     , m_htmlDialog(nullptr)
     , m_tokenEditor(nullptr)
+    , m_advancedSearchDialog(nullptr)
 #ifdef HAVE_MARBLE
     , m_positionBrowser(nullptr)
 #endif
@@ -1874,6 +1876,30 @@ void MainWindow::Window::createSearchBar()
     connect(m_browser, &Browser::BrowserWidget::isFilterable, m_filterWidget, &ThumbnailView::FilterWidget::setEnabled);
     connect(m_searchBar, &SearchBar::textChanged, ThumbnailView::ThumbnailFacade::instance(), &ThumbnailView::ThumbnailFacade::setFreeformFilter);
     connect(m_searchBar, &SearchBar::cleared, ThumbnailView::ThumbnailFacade::instance(), &ThumbnailView::ThumbnailFacade::clearFilter);
+    connect(m_searchBar, &SearchBar::advancedSearchClicked, this, &Window::slotOpenAdvancedSearch);
+}
+
+void MainWindow::Window::slotOpenAdvancedSearch()
+{
+    if (!m_advancedSearchDialog) {
+        m_advancedSearchDialog = new AdvancedSearchDialog(this);
+        connect(m_advancedSearchDialog, &AdvancedSearchDialog::searchResultsChanged,
+                this, [this](const DB::FileNameList &items) { showThumbNails(items); });
+        connect(m_advancedSearchDialog, &AdvancedSearchDialog::dialogClosed,
+                this, &Window::slotAdvancedSearchClosed);
+    }
+    m_searchBar->setLineEditEnabled(false);
+    m_searchBar->setAdvancedSearchActive(true);
+    m_advancedSearchDialog->show();
+    m_advancedSearchDialog->raise();
+    m_advancedSearchDialog->activateWindow();
+}
+
+void MainWindow::Window::slotAdvancedSearchClosed()
+{
+    m_searchBar->setLineEditEnabled(true);
+    m_searchBar->setAdvancedSearchActive(false);
+    showThumbNails();
 }
 
 void MainWindow::Window::executeStartupActions()
