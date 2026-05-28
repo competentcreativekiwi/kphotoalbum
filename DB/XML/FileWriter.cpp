@@ -330,6 +330,8 @@ void DB::FileWriter::save(QXmlStreamWriter &writer, const DB::ImageInfoPtr &info
 
     if (info->angle() != 0)
         writer.writeAttribute(QStringLiteral("angle"), QString::number(info->angle()));
+    if (info->mirroredHorizontally())
+        writer.writeAttribute(QStringLiteral("mirroredHorizontally"), QStringLiteral("1"));
     writer.writeAttribute(QStringLiteral("md5sum"), info->MD5Sum().toHexString());
     writer.writeAttribute(QStringLiteral("width"), QString::number(info->size().width()));
     writer.writeAttribute(QStringLiteral("height"), QString::number(info->size().height()));

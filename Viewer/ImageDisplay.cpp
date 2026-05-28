@@ -117,7 +117,7 @@ bool Viewer::ImageDisplay::setImageImpl(DB::ImageInfoPtr info, bool forward)
         ++m_curIndex;
     }
 
-    if (m_cache.contains(m_curIndex) && m_cache[m_curIndex].angle == info->angle()) {
+    if (m_cache.contains(m_curIndex) && m_cache[m_curIndex].angle == info->angle() && m_cache[m_curIndex].mirroredHorizontally == info->mirroredHorizontally()) {
         const ViewPreloadInfo &found = m_cache[m_curIndex];
         m_loadedImage = found.img;
         updateZoomPoints(Settings::SettingsData::instance()->viewerStandardSize(), found.img.size());
@@ -479,6 +479,7 @@ void Viewer::ImageDisplay::pixmapLoaded(ImageManager::ImageRequest *request, con
     const QSize imgSize = request->size();
     const QSize fullSize = request->fullSize();
     const int angle = request->angle();
+    const bool mirroredHorizontally = request->mirroredHorizontally();
     const bool loadedOK = request->loadedOK();
 
     // the image might have changed (even to a null value) while the pixmap was loaded
@@ -514,7 +515,7 @@ void Viewer::ImageDisplay::pixmapLoaded(ImageManager::ImageRequest *request, con
         if (imgSize != size())
             return; // Might be an old preload version, or a loaded version that never made it in time
 
-        ViewPreloadInfo info(image, fullSize, angle);
+        ViewPreloadInfo info(image, fullSize, angle, mirroredHorizontally);
         m_cache.insert(indexOf(fileName), info);
         updatePreload();
     }
@@ -668,6 +669,7 @@ void Viewer::ImageDisplay::potentiallyLoadFullSize()
     if (m_info && m_info->size() != m_loadedImage.size()) {
         qCDebug(ViewerLog) << "Loading full size image for " << m_info->fileName().relative();
         ImageManager::ImageRequest *request = new ImageManager::ImageRequest(m_info->fileName(), QSize(-1, -1), m_info->angle(), this);
+        request->setMirroredHorizontally(m_info->mirroredHorizontally());
         request->setPriority(ImageManager::Viewer);
         ImageManager::AsyncLoader::instance()->load(request);
         busy();
@@ -696,6 +698,7 @@ void Viewer::ImageDisplay::requestImage(const DB::ImageInfoPtr &info, bool prior
         s = QSize(-1, -1);
 
     ImageManager::ImageRequest *request = new ImageManager::ImageRequest(info->fileName(), s, info->angle(), this);
+    request->setMirroredHorizontally(info->mirroredHorizontally());
     request->setUpScale(viewSize == Settings::FullSize);
     request->setPriority(priority ? ImageManager::Viewer : ImageManager::ViewerPreload);
     ImageManager::AsyncLoader::instance()->load(request);

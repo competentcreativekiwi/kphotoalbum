@@ -114,6 +114,9 @@ QImage ImageManager::ImageLoaderThread::scaleAndRotate(ImageRequest *request, QI
             request->setFullSize(QSize(request->fullSize().height(), request->fullSize().width()));
     }
 
+    if (request->mirroredHorizontally())
+        img = img.mirrored(true, false);
+
     // If we are looking for a scaled version, then scale
     if (shouldImageBeScale(img, request))
         img = Utilities::scaleImage(img, request->size(), Qt::KeepAspectRatio);

@@ -19,6 +19,7 @@ ImageManager::ImageRequest::ImageRequest(const DB::FileName &fileName,
     , m_dontUpScale(false)
     , m_isThumbnailRequest(false)
     , m_imageIsPreRotated(false)
+    , m_mirroredHorizontally(false)
 {
 }
 
@@ -33,6 +34,7 @@ ImageManager::ImageRequest::ImageRequest(RequestType type)
     , m_dontUpScale(false)
     , m_isThumbnailRequest(false)
     , m_imageIsPreRotated(false)
+    , m_mirroredHorizontally(false)
 {
     Q_ASSERT(type == RequestType::ExitRequest);
 }
@@ -50,6 +52,16 @@ bool ImageManager::ImageRequest::imageIsPreRotated() const
 void ImageManager::ImageRequest::setImageIsPreRotated(bool imageIsPreRotated)
 {
     m_imageIsPreRotated = imageIsPreRotated;
+}
+
+bool ImageManager::ImageRequest::mirroredHorizontally() const
+{
+    return m_mirroredHorizontally;
+}
+
+void ImageManager::ImageRequest::setMirroredHorizontally(bool mirrored)
+{
+    m_mirroredHorizontally = mirrored;
 }
 
 bool ImageManager::ImageRequest::loadedOK() const
@@ -85,7 +97,7 @@ bool ImageManager::ImageRequest::operator<(const ImageRequest &other) const
 bool ImageManager::ImageRequest::operator==(const ImageRequest &other) const
 {
     // Compare all atributes but the pixmap.
-    return (m_type == other.m_type && databaseFileName() == other.databaseFileName() && m_width == other.m_width && m_height == other.m_height && m_angle == other.m_angle && m_client == other.m_client && m_priority == other.m_priority);
+    return (m_type == other.m_type && databaseFileName() == other.databaseFileName() && m_width == other.m_width && m_height == other.m_height && m_angle == other.m_angle && m_mirroredHorizontally == other.m_mirroredHorizontally && m_client == other.m_client && m_priority == other.m_priority);
 }
 
 ImageManager::ImageClientInterface *ImageManager::ImageRequest::client() const

@@ -90,6 +90,9 @@ public:
     bool imageIsPreRotated() const;
     void setImageIsPreRotated(bool imageIsPreRotated);
 
+    bool mirroredHorizontally() const;
+    void setMirroredHorizontally(bool mirrored);
+
 private:
     const RequestType m_type;
     DB::FileName m_fileName;
@@ -104,6 +107,7 @@ private:
     bool m_dontUpScale;
     bool m_isThumbnailRequest;
     bool m_imageIsPreRotated;
+    bool m_mirroredHorizontally;
 };
 
 inline uint qHash(const ImageRequest &ir)

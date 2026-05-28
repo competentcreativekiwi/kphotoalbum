@@ -75,6 +75,8 @@ QDomElement ImportExport::XMLHandler::save(QDomDocument doc, const DB::ImageInfo
     elm.setAttribute(QString::fromLatin1("height"), info->size().height());
     elm.setAttribute(QString::fromLatin1("md5sum"), info->MD5Sum().toHexString());
     elm.setAttribute(QString::fromLatin1("angle"), info->angle());
+    if (info->mirroredHorizontally())
+        elm.setAttribute(QString::fromLatin1("mirroredHorizontally"), 1);
 
     writeCategories(doc, elm, info);
 

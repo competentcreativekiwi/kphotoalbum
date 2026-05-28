@@ -97,6 +97,7 @@
 #include <QDesktopServices>
 #include <QInputDialog>
 #include <QMetaEnum>
+#include <QRandomGenerator>
 #include <functional>
 
 using namespace std::chrono_literals;
@@ -297,6 +298,14 @@ void Viewer::ViewerWidget::createRotateMenu()
     addRotateAction(i18nc("@action:inmenu", "Rotate clockwise"), 90, Qt::Key_9, QString::fromLatin1("viewer-rotate90"));
     addRotateAction(i18nc("@action:inmenu", "Flip Over"), 180, Qt::Key_8, QString::fromLatin1("viewer-rotate180"));
     addRotateAction(i18nc("@action:inmenu", "Rotate counterclockwise"), 270, Qt::Key_7, QString::fromLatin1("viewer-rotate270"));
+
+    auto *mirrorAction = new QAction(i18nc("@action:inmenu", "Mirror Horizontally"));
+    connect(mirrorAction, &QAction::triggered, this, &ViewerWidget::mirrorHorizontally);
+    mirrorAction->setShortcut(Qt::Key_6);
+    m_actions->setShortcutsConfigurable(mirrorAction, false);
+    m_actions->addAction(QString::fromLatin1("viewer-mirror-horizontal"), mirrorAction);
+    m_rotateMenu->addAction(mirrorAction);
+
     const bool showFullFeatures = m_type == UsageType::FullFeaturedViewer;
     // hide entries of hidden menus so that they can't be triggered via shortcut:
     for (auto &action : m_rotateMenu->actions())
@@ -447,6 +456,11 @@ void Viewer::ViewerWidget::createSlideShowMenu()
     m_slideShowRunSlower->setText(i18nc("@action:inmenu", "Run Slower"));
     m_actions->setDefaultShortcut(m_slideShowRunSlower, Qt::CTRL + Qt::Key_Minus); // if you change this, please update the info in Viewer::TransientDisplay
     popup->addAction(m_slideShowRunSlower);
+
+    QAction *randomAction = m_actions->addAction(QString::fromLatin1("viewer-random-image"), this, &ViewerWidget::showRandom);
+    randomAction->setText(i18nc("@action:inmenu", "Jump to Random Image"));
+    m_actions->setDefaultShortcut(randomAction, Qt::CTRL + Qt::Key_M);
+    popup->addAction(randomAction);
 
     const bool showFullFeatures = m_type == UsageType::FullFeaturedViewer;
     // hide entries of hidden menus so that they can't be triggered via shortcut:
@@ -764,6 +778,31 @@ void Viewer::ViewerWidget::showFirst()
 void Viewer::ViewerWidget::showLast()
 {
     showNextN(m_list.count());
+}
+
+void Viewer::ViewerWidget::showRandom()
+{
+    if (m_list.count() <= 1)
+        return;
+    filterNone();
+    if (m_display == m_videoDisplay) {
+        m_videoPlayerStoppedManually = true;
+        m_videoDisplay->stop();
+    }
+    m_current = QRandomGenerator::global()->bounded((int)m_list.count());
+    m_forward = true;
+    load();
+}
+
+void Viewer::ViewerWidget::mirrorHorizontally()
+{
+    const auto current = currentInfo();
+    if (!current || current->isNull())
+        return;
+    current->setMirroredHorizontally(!current->mirroredHorizontally());
+    m_display->rotate(current);
+    invalidateThumbnail();
+    MainWindow::DirtyIndicator::markDirty();
 }
 
 void Viewer::ViewerWidget::closeEvent(QCloseEvent *event)

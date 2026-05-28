@@ -138,6 +138,9 @@ public:
     int angle() const;
     void setAngle(int angle);
 
+    bool mirroredHorizontally() const;
+    void setMirroredHorizontally(bool mirrored);
+
     short rating() const;
     void setRating(short rating);
 
@@ -256,6 +259,7 @@ private:
     CategoryInformation m_categoryInfomation;
     TaggedAreas m_taggedAreas;
     int m_angle;
+    bool m_mirroredHorizontally = false;
     enum OnDisk { YesOnDisk,
                   NoNotOnDisk,
                   Unchecked };

@@ -252,6 +252,18 @@ void ImageInfo::setAngle(int angle)
     m_angle = angle;
 }
 
+bool ImageInfo::mirroredHorizontally() const
+{
+    return m_mirroredHorizontally;
+}
+
+void ImageInfo::setMirroredHorizontally(bool mirrored)
+{
+    if (mirrored != m_mirroredHorizontally)
+        markDirty();
+    m_mirroredHorizontally = mirrored;
+}
+
 short ImageInfo::rating() const
 {
     return m_rating;
@@ -332,7 +344,7 @@ bool ImageInfo::operator!=(const ImageInfo &other) const
 bool ImageInfo::operator==(const ImageInfo &other) const
 {
     bool changed = (m_fileName != other.m_fileName || m_label != other.m_label || (!m_description.isEmpty() && !other.m_description.isEmpty() && m_description != other.m_description) || // one might be isNull.
-                    m_date != other.m_date || m_angle != other.m_angle || m_rating != other.m_rating || (m_stackId != other.m_stackId || !((m_stackId == 0) ? true : (m_stackOrder == other.m_stackOrder))));
+                    m_date != other.m_date || m_angle != other.m_angle || m_mirroredHorizontally != other.m_mirroredHorizontally || m_rating != other.m_rating || (m_stackId != other.m_stackId || !((m_stackId == 0) ? true : (m_stackOrder == other.m_stackOrder))));
     if (!changed) {
         QStringList keys = DB::ImageDB::instance()->categoryCollection()->categoryNames();
         for (QStringList::ConstIterator it = keys.constBegin(); it != keys.constEnd(); ++it)
@@ -515,6 +527,7 @@ ImageInfo &ImageInfo::operator=(const ImageInfo &other)
     m_categoryInfomation = other.m_categoryInfomation;
     m_taggedAreas = other.m_taggedAreas;
     m_angle = other.m_angle;
+    m_mirroredHorizontally = other.m_mirroredHorizontally;
     m_imageOnDisk = other.m_imageOnDisk;
     m_md5sum = other.m_md5sum;
     m_null = other.m_null;
@@ -577,8 +590,10 @@ void DB::ImageInfo::copyExtraData(const DB::ImageInfo &from, bool copyAngle)
     m_description = from.m_description;
     // Hmm...  what should the date be?  orig or modified?
     // _date = from._date;
-    if (copyAngle)
+    if (copyAngle) {
         m_angle = from.m_angle;
+        m_mirroredHorizontally = from.m_mirroredHorizontally;
+    }
     m_rating = from.m_rating;
 }
 

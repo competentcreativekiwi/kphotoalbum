@@ -32,15 +32,17 @@ class ViewerWidget;
 
 struct ViewPreloadInfo {
     ViewPreloadInfo() { }
-    ViewPreloadInfo(const QImage &img, const QSize &size, int angle)
+    ViewPreloadInfo(const QImage &img, const QSize &size, int angle, bool mirroredHorizontally = false)
         : img(img)
         , size(size)
         , angle(angle)
+        , mirroredHorizontally(mirroredHorizontally)
     {
     }
     QImage img;
     QSize size;
     int angle = 0;
+    bool mirroredHorizontally = false;
 };
 
 class ImageDisplay : public Viewer::AbstractDisplay, public ImageManager::ImageClientInterface

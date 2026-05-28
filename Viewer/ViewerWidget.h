@@ -170,9 +170,11 @@ protected Q_SLOTS:
     void showPrev1000();
     void showFirst();
     void showLast();
+    void showRandom();
     void deleteCurrent();
     void removeCurrent();
     void rotate(int angle);
+    void mirrorHorizontally();
     void toggleFullScreen();
     void slotStartStopSlideShow();
     void slotSlideShowNext();

@@ -840,6 +840,7 @@ ImageInfoPtr ImageDB::createImageInfo(const FileName &fileName, DB::ReaderPtr re
     static QString _stackId_ = QString::fromUtf8("stackId");
     static QString _stackOrder_ = QString::fromUtf8("stackOrder");
     static QString _videoLength_ = QString::fromUtf8("videoLength");
+    static QString _mirroredHorizontally_ = QString::fromUtf8("mirroredHorizontally");
     static QString _options_ = QString::fromUtf8("options");
     static QString _0_ = QString::fromUtf8("0");
     static QString _minus1_ = QString::fromUtf8("-1");
@@ -905,6 +906,9 @@ ImageInfoPtr ImageDB::createImageInfo(const FileName &fileName, DB::ReaderPtr re
 
     if (reader->hasAttribute(_videoLength_))
         info->setVideoLength(reader->attribute(_videoLength_).toInt());
+
+    if (reader->hasAttribute(_mirroredHorizontally_))
+        info->setMirroredHorizontally(reader->attribute(_mirroredHorizontally_).toInt());
 
     DB::ImageInfoPtr result(info);
 
